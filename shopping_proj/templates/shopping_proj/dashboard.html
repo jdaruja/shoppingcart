@@ -1,0 +1,182 @@
+{% extends 'shopping_proj/base.html' %}
+{% block title %}
+    Dashboard
+{% endblock %}
+{% block content %}
+    <div class="modal modal-dialog modal-login modal-clear" id="AddList" tabindex="-1"
+         role="dialog"
+         style="color: black">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">Add Shopping List</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="card-body">
+                        <form class="form" method="POST"
+                              action="{% url 'shopping_proj:dashboard' %}">
+                            {% csrf_token %}
+                            <span>
+                        <div class="input-group form-group-no-border input-lg">
+                            {{ form.name }}
+                        </div>
+                            <button type="submit"
+                                    class="btn btn-primary btn-round btn-lg btn-block">
+                                ADD
+                            </button>
+                    </span>
+                        </form>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="modal modal-dialog modal-login modal-clear alien-modal-form" id="FormModal"
+         tabindex="-1" role="dialog" style="color: black">
+    </div>
+
+    <div class="row" style="margin-top:-20px">
+        <div class="col-md-8 ml-auto mr-auto">
+            <div class="card card-plain" style="color:black">
+                <div class="card-body bg-white" style="opacity:.85">
+                    {% if form.errors %}
+                        <div class="alert alert-danger" role="alert">
+                            <div class="container">
+                                <div class="alert-icon">
+                                    <i class="now-ui-icons objects_support-17"></i>
+                                </div>
+                                <strong>Oh snap!</strong>
+                                {% for error in form.errors %}
+                                    {{ form.errors.as_text | escape }}
+                                {% endfor %}
+                                <button type="button" class="close" data-dismiss="alert"
+                                        aria-label="Close">
+						<span aria-hidden="true">
+							<i class="now-ui-icons ui-1_simple-remove"></i>
+						</span>
+                                </button>
+                            </div>
+                        </div>
+                    {% endif %}
+                    {% if messages %}
+                        <div class="alert alert-success" role="alert">
+                            <div class="container">
+                                <div class="alert-icon">
+                                    <i class="now-ui-icons ui-2_like"></i>
+                                </div>
+                                <strong>Well done!</strong>
+                                {% for message in messages %}
+                                    {{ message }}
+                                {% endfor %}
+                                <button type="button" class="close" data-dismiss="alert"
+                                        aria-label="Close">
+  						<span aria-hidden="true">
+							<i class="now-ui-icons ui-1_simple-remove"></i>
+						</span>
+                                </button>
+                            </div>
+                        </div>
+                    {% endif %}
+                    <div class="pull-left">
+                        <a href="#"
+                           data-toggle="modal"
+                           data-target="#AddList"
+                           class="padding-five btn btn-primary btn-round float-right">
+                            <i class="material-icons padding-five">add</i>
+                        </a>
+                    </div>
+                    <div class="table-responsive ">
+                        <table class="table">
+                            {% if shopping_proj %}
+                                <thead class="">
+                                <tr>
+                                    <th class="text-center">
+                                        #
+                                    </th>
+                                    <th>
+                                        Name
+                                    </th>
+                                    <th>
+
+                                    </th>
+                                    <th class="text-center">
+                                        Since
+                                    </th>
+                                    <th class="text-right">
+                                        Last Updated
+                                    </th>
+                                    <th class="text-right">
+                                        Actions
+                                    </th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                {% for list in shopping_proj %}
+                                    <tr>
+                                        <td class="text-center">
+                                            {{ forloop.counter }}
+                                        </td>
+                                        <td>
+                                            {{ list.name }}
+                                        </td>
+                                        <td>
+                                            <a style="color: blue"
+                                               href="{% url 'shopping_proj:details' list.id %}">Details
+                                            </a>
+                                        </td>
+                                        <td class="text-center">
+                                            {{ list.date_created }}
+                                        </td>
+                                        <td class="text-right">
+                                            {{ list.date_updated | default:"None" }}
+                                        </td>
+                                        <td class="text-right">
+                                            <button type="button"
+                                                    rel="tooltip"
+                                                    class="alien-modal-trigger btn btn-info
+                                                           btn-icon btn-sm "
+                                                    title="Update List Name."
+                                                    data-action="{% url 'shopping_proj:update_list' list.id %}"
+                                                    data-modal_id="#FormModal"
+                                                    data-form_id="#edit-form"
+                                            >
+                                                <i class="now-ui-icons users_single-02"></i>
+                                            </button>
+                                            <button type="button"
+                                                    rel="tooltip"
+                                                    class="alien-modal-trigger btn btn-danger btn-icon btn-sm "
+                                                    title="Delete List."
+                                                    data-action="{% url 'shopping_proj:delete_list' list.id %}"
+                                                    data-modal_id="#FormModal"
+                                                    data-form_id="#delete-form">
+                                                <i class="now-ui-icons ui-1_simple-remove"></i>
+                                            </button>
+                                        </td>
+                                    </tr>
+                                {% endfor %}
+                                </tbody>
+                            {% else %}
+                                <br>
+                                <br>
+                                <thead>
+                                <tr>
+                                    ********** NO SHOPPING LISTS FOUND PLEASE CREATE ONE **********
+                                </tr>
+                                </thead>
+                            {% endif %}
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+
+        </div>
+    </div>
+{% endblock %}
